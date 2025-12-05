@@ -1,7 +1,8 @@
 """
 Streamlit Multi-Page Application for Crash Reporting Analysis
-Deployment for ML Coursework
+Used for ML coursework
 """
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -13,7 +14,7 @@ from sklearn.preprocessing import StandardScaler
 
 warnings.filterwarnings('ignore')
 
-# Page configuration
+# Set up the Streamlit page (title, icon, layout).
 st.set_page_config(
     page_title="Crash Reporting Analysis",
     page_icon="🚗",
@@ -21,7 +22,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Basic custom CSS for nicer page headings.
 st.markdown("""
     <style>
     .main-header {
@@ -34,7 +35,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state
+# Keep data, model, and scaler stored while switching pages.
 if 'data' not in st.session_state:
     st.session_state.data = None
 if 'model' not in st.session_state:
@@ -42,43 +43,30 @@ if 'model' not in st.session_state:
 if 'scaler' not in st.session_state:
     st.session_state.scaler = None
 
-# Sidebar navigation
+# Sidebar navigation menu.
 st.sidebar.title("🚗 Crash Analysis Dashboard")
 page = st.sidebar.radio(
     "Navigation",
     ["🏠 Home", "📊 Data Exploration", "🔧 Preprocessing", "🤖 Model Training", "📈 Model Evaluation", "🔮 Prediction"]
 )
 
-# Home Page
+# ---------------------- HOME PAGE -------------------------
 if page == "🏠 Home":
+    # Title banner
     st.markdown('<div class="main-header">🚗 Crash Reporting Analysis Dashboard</div>', unsafe_allow_html=True)
     
+    # App description
     st.markdown("""
     ## Welcome to the Crash Reporting Analysis Application
     
-    This application provides comprehensive analysis of vehicle crash data to predict injury severity.
+    This tool lets you explore crash data and build models to predict injury severity.
     
-    ### Features:
-    - **Data Exploration**: Interactive exploration of crash reporting data
-    - **Preprocessing**: Data cleaning and feature engineering options
-    - **Model Training**: Train machine learning models with hyperparameter tuning
-    - **Model Evaluation**: Compare and evaluate different ML algorithms
-    - **Prediction**: Make predictions on new crash data
-    
-    ### Dataset Information
-    The dataset contains information about vehicle crashes including:
-    - Weather conditions
-    - Road surface conditions
-    - Driver behavior and characteristics
-    - Vehicle information
-    - Crash details and outcomes
-    
-    ### Getting Started
-    1. Navigate to **Data Exploration** to explore the dataset
-    2. Use **Preprocessing** to clean and prepare the data
-    3. Go to **Model Training** to train ML models
-    4. Check **Model Evaluation** to compare model performance
-    5. Use **Prediction** to make predictions on new data
+    **How to use this app:**
+    1. Go to **Data Exploration** to view the dataset  
+    2. Use **Preprocessing** to clean and prepare the data  
+    3. Train models under **Model Training**  
+    4. Compare performance in **Model Evaluation**  
+    5. Use **Prediction** to make a new prediction  
     """)
     
     # Load dataset button
@@ -86,30 +74,33 @@ if page == "🏠 Home":
         try:
             df = pd.read_csv('Crash_Reporting_-_Drivers_Data.csv')
             st.session_state.data = df
-            st.success(f"✅ Dataset loaded successfully! Shape: {df.shape}")
+            st.success(f" Dataset loaded! Shape: {df.shape}")
         except FileNotFoundError:
-            st.error("❌ Dataset file not found. Please ensure 'Crash_Reporting_-_Drivers_Data.csv' is in the current directory.")
+            st.error(" Dataset file not found. Make sure the CSV is in the same folder.")
         except Exception as e:
-            st.error(f"❌ Error loading dataset: {str(e)}")
+            st.error(f"Error loading dataset: {str(e)}")
 
-# Data Exploration Page
-elif page == "📊 Data Exploration":
-    st.title("📊 Data Exploration")
-    
+# ------------------ DATA EXPLORATION PAGE -----------------
+elif page == " Data Exploration":
+    st.title(" Data Exploration")
+
+    # Check if data is loaded
     if st.session_state.data is None:
-        st.warning("⚠️ Please load the dataset from the Home page first.")
+        st.warning(" Please load the dataset from the Home page first.")
+        
+        # Quick load option
         if st.button("Load Dataset Now"):
             try:
                 df = pd.read_csv('Crash_Reporting_-_Drivers_Data.csv')
                 st.session_state.data = df
-                st.success("✅ Dataset loaded!")
+                st.success(" Dataset loaded!")
                 st.rerun()
             except:
-                st.error("❌ Could not load dataset.")
+                st.error(" Could not load dataset.")
     else:
         df = st.session_state.data
         
-        # Dataset overview
+        # Show basic dataset stats
         st.header("Dataset Overview")
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Total Rows", f"{df.shape[0]:,}")
@@ -117,21 +108,21 @@ elif page == "📊 Data Exploration":
         col3.metric("Missing Values", f"{df.isnull().sum().sum():,}")
         col4.metric("Duplicate Rows", df.duplicated().sum())
         
-        # Display data
+        # Show a sample of the dataset
         st.subheader("Data Preview")
         num_rows = st.slider("Number of rows to display", 5, 100, 10)
         st.dataframe(df.head(num_rows))
         
-        # Summary statistics
+        # Show summary statistics for numeric columns
         st.subheader("Summary Statistics")
         numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
         if len(numeric_cols) > 0:
             st.dataframe(df[numeric_cols].describe())
         
-        # Visualizations
+        # Charts and graphs
         st.subheader("Visualizations")
         
-        # Target variable distribution
+        # Plot injury severity distribution
         if 'Injury Severity' in df.columns:
             st.write("### Injury Severity Distribution")
             injury_counts = df['Injury Severity'].value_counts()
@@ -144,7 +135,7 @@ elif page == "📊 Data Exploration":
             plt.tight_layout()
             st.pyplot(fig)
 
-# Preprocessing Page
+# ------------------ PREPROCESSING PAGE --------------------
 elif page == "🔧 Preprocessing":
     st.title("🔧 Data Preprocessing")
     
@@ -152,103 +143,113 @@ elif page == "🔧 Preprocessing":
         st.warning("⚠️ Please load the dataset from the Home page first.")
     else:
         df = st.session_state.data.copy()
-        st.info("💡 Preprocessing steps are demonstrated in the Jupyter notebook. This page shows the preprocessing pipeline.")
+        
+        # This page only explains preprocessing; full pipeline is in the notebook.
+        st.info("💡 This page shows an overview of the preprocessing steps used in the notebook.")
         
         st.subheader("Preprocessing Steps Applied:")
         st.markdown("""
-        1. **Missing Values**: Filled categorical with 'Unknown', numerical with median
-        2. **Scaling**: StandardScaler applied for Logistic Regression
-        3. **Error Correction**: Removed duplicates, invalid data
-        4. **Feature Engineering**: Created vehicle age, crash hour, day of week, substance abuse binary
-        5. **Encoding**: One-hot encoding for categorical variables
-        6. **Train-Test Split**: 60% train, 20% validation, 20% test
+        1. Filled missing values  
+        2. Standardized numerical features  
+        3. Removed duplicates and invalid records  
+        4. Created engineered features (vehicle age, crash hour, etc.)  
+        5. Applied one-hot encoding  
+        6. Split data into train/validation/test  
         """)
 
-# Model Training Page
-elif page == "🤖 Model Training":
-    st.title("🤖 Model Training")
+# ------------------ MODEL TRAINING PAGE -------------------
+elif page == " Model Training":
+    st.title(" Model Training")
     
-    st.info("💡 Models are trained in the Jupyter notebook with hyperparameter tuning using GridSearchCV.")
+    # Explain training process
+    st.info(" Models were trained in the notebook using GridSearchCV.")
     
     st.subheader("Models Trained:")
     st.markdown("""
-    1. **Random Forest Classifier** - with GridSearchCV hyperparameter tuning
-    2. **Gradient Boosting Classifier** - with GridSearchCV hyperparameter tuning
-    3. **Logistic Regression** - with GridSearchCV hyperparameter tuning
-    
-    All models use 3-fold cross-validation for hyperparameter optimization.
+    - Random Forest  
+    - Gradient Boosting  
+    - Logistic Regression  
+    (All tuned using GridSearchCV)
     """)
     
-    # Load model if available
+    # Try loading model
     try:
         model = joblib.load('best_model.pkl')
         st.session_state.model = model
-        st.success("✅ Best model loaded successfully!")
+        st.success(" Best model loaded!")
         
-        # Try to load scaler
+        # Load scaler if exists
         try:
             scaler = joblib.load('scaler.pkl')
             st.session_state.scaler = scaler
         except:
             pass
     except:
-        st.warning("⚠️ Model file not found. Please run the notebook first to train models.")
+        st.warning("⚠️ Model file not found. Train models in the notebook first.")
 
-# Model Evaluation Page
-elif page == "📈 Model Evaluation":
-    st.title("📈 Model Evaluation")
+# ------------------ MODEL EVALUATION PAGE -----------------
+elif page == " Model Evaluation":
+    st.title(" Model Evaluation")
     
     st.subheader("Evaluation Metrics Used:")
     st.markdown("""
-    - **Accuracy**: Overall correctness of predictions
-    - **Precision**: Proportion of positive predictions that are correct
-    - **Recall**: Proportion of actual positives correctly identified
-    - **F1-Score**: Harmonic mean of precision and recall
-    - **Confusion Matrix**: Detailed breakdown of prediction errors
-    - **Classification Report**: Per-class metrics
+    - Accuracy  
+    - Precision  
+    - Recall  
+    - F1-Score  
+    - Confusion Matrix  
+    - Classification Report  
     """)
     
-    st.info("💡 Detailed evaluation results are available in the Jupyter notebook, including confusion matrices and classification reports for all three models.")
+    st.info("💡 Full evaluation results can be found in the Jupyter notebook.")
 
-# Prediction Page
+# ---------------------- PREDICTION PAGE --------------------
 elif page == "🔮 Prediction":
     st.title("🔮 Make Predictions")
     
+    # Ensure model is loaded
     if st.session_state.model is None:
-        st.warning("⚠️ Please load the model from the Model Training page first.")
+        st.warning("⚠️ Load the model from the Model Training page first.")
         try:
             model = joblib.load('best_model.pkl')
             st.session_state.model = model
+            
+            # Load scaler
             try:
                 scaler = joblib.load('scaler.pkl')
                 st.session_state.scaler = scaler
             except:
                 pass
+            
             st.rerun()
         except:
-            st.error("❌ Model file not found. Please run the notebook first.")
+            st.error(" Model file not found. Train models in the notebook first.")
     else:
         st.header("Predict Injury Severity")
         st.subheader("Enter Crash Details")
         
+        # Split form inputs into two columns
         col1, col2 = st.columns(2)
         
+        # Left column inputs
         with col1:
             weather = st.selectbox("Weather", ["Clear", "Cloudy", "Rain", "Snow", "Other"])
             surface = st.selectbox("Surface Condition", ["Dry", "Wet", "Snow", "Ice", "Other"])
             light = st.selectbox("Light", ["Daylight", "Dark - Lighted", "Dark - Not Lighted", "Dusk", "Dawn"])
             collision_type = st.selectbox("Collision Type", ["Front to Rear", "Front to Front", "Angle", "Sideswipe, Same Direction", "Single Vehicle", "Other"])
         
+        # Right column inputs
         with col2:
             driver_at_fault = st.selectbox("Driver At Fault", ["Yes", "No"])
             speed_limit = st.slider("Speed Limit", 0, 100, 40)
             vehicle_year = st.number_input("Vehicle Year", min_value=1900, max_value=2025, value=2015)
             route_type = st.selectbox("Route Type", ["Interstate (State)", "US (State)", "Maryland (State) Route", "County Route", "Other"])
         
+        # Predict button
         if st.button("Predict Injury Severity", type="primary"):
-            st.info("💡 For accurate predictions, the input features must match the exact feature engineering pipeline used during training. Please refer to the notebook for the complete prediction pipeline.")
-            st.success("✅ Prediction functionality requires matching feature engineering from training phase. See notebook for full implementation.")
+            st.info(" Inputs must match the original training pipeline exactly.")
+            st.success("Prediction requires full feature engineering (see notebook).")
 
+# Standard Python script entry point.
 if __name__ == "__main__":
     pass
-
