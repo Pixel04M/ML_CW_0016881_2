@@ -1,4 +1,4 @@
-# Machine Learning Project: Crash Reporting Analysis
+# Crash Reporting Analysis
 
 ## Project Overview
 
