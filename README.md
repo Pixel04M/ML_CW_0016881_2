@@ -24,11 +24,10 @@ CW_ML/
 ├── Crash_Reporting_-_Drivers_Data.csv    # Dataset
 ├── ml_crash_analysis.ipynb                # Jupyter notebook with analysis
 ├── app.py                                 # Streamlit multi-page application
-├── requirements.txt                       # Python dependencies
-├── README.md                              # This file
-├── Report.md                              # Project report
-├── .gitignore                             # Git ignore file
-└── LICENSE                                # MIT License
+├── requirements.txt                      
+├── README.md                                                          
+├── .gitignore                          
+└── LICENSE                            
 ```
 
 ## Setup Instructions
