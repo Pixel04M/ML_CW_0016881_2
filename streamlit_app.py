@@ -47,13 +47,13 @@ if 'scaler' not in st.session_state:
 st.sidebar.title("🚗 Crash Analysis Dashboard")
 page = st.sidebar.radio(
     "Navigation",
-    ["🏠 Home", "📊 Data Exploration", "🔧 Preprocessing", "🤖 Model Training", "📈 Model Evaluation", "🔮 Prediction"]
+    [" Home", " Data Exploration", " Preprocessing", " Model Training", " Model Evaluation", " Prediction"]
 )
 
 # ---------------------- HOME PAGE -------------------------
-if page == "🏠 Home":
+if page == " Home":
     # Title banner
-    st.markdown('<div class="main-header">🚗 Crash Reporting Analysis Dashboard</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header"> Crash Reporting Analysis Dashboard</div>', unsafe_allow_html=True)
     
     # App description
     st.markdown("""
@@ -136,16 +136,16 @@ elif page == " Data Exploration":
             st.pyplot(fig)
 
 # ------------------ PREPROCESSING PAGE --------------------
-elif page == "🔧 Preprocessing":
-    st.title("🔧 Data Preprocessing")
+elif page == " Preprocessing":
+    st.title(" Data Preprocessing")
     
     if st.session_state.data is None:
-        st.warning("⚠️ Please load the dataset from the Home page first.")
+        st.warning(" Please load the dataset from the Home page first.")
     else:
         df = st.session_state.data.copy()
         
         # This page only explains preprocessing; full pipeline is in the notebook.
-        st.info("💡 This page shows an overview of the preprocessing steps used in the notebook.")
+        st.info(" This page shows an overview of the preprocessing steps used in the notebook.")
         
         st.subheader("Preprocessing Steps Applied:")
         st.markdown("""
@@ -185,7 +185,7 @@ elif page == " Model Training":
         except:
             pass
     except:
-        st.warning("⚠️ Model file not found. Train models in the notebook first.")
+        st.warning(" Model file not found. Train models in the notebook first.")
 
 # ------------------ MODEL EVALUATION PAGE -----------------
 elif page == " Model Evaluation":
@@ -201,15 +201,15 @@ elif page == " Model Evaluation":
     - Classification Report  
     """)
     
-    st.info("💡 Full evaluation results can be found in the Jupyter notebook.")
+    st.info(" Full evaluation results can be found in the Jupyter notebook.")
 
 # ---------------------- PREDICTION PAGE --------------------
-elif page == "🔮 Prediction":
-    st.title("🔮 Make Predictions")
+elif page == " Prediction":
+    st.title(" Make Predictions")
     
     # Ensure model is loaded
     if st.session_state.model is None:
-        st.warning("⚠️ Load the model from the Model Training page first.")
+        st.warning(" Load the model from the Model Training page first.")
         try:
             model = joblib.load('best_model.pkl')
             st.session_state.model = model
